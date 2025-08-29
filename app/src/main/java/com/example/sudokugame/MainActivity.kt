@@ -1,46 +1,74 @@
 package com.example.sudokugame
 
+import android.R.attr.text
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.sudokugame.domain.SudokuGame
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+import com.example.sudokugame.state.SudokuViewModel
 import com.example.sudokugame.ui.theme.SudokuGameTheme
 import com.example.sudokugame.userInterface.SudokuBoard
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: SudokuViewModel by viewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             SudokuGameTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val samplePuzzle = listOf(
-                        listOf(5, 3, 0, 0, 7, 0, 0, 0, 0),
-                        listOf(6, 0, 0, 1, 9, 5, 0, 0, 0),
-                        listOf(0, 9, 8, 0, 0, 0, 0, 6, 0),
-                        listOf(8, 0, 0, 0, 6, 0, 0, 0, 3),
-                        listOf(4, 0, 0, 8, 0, 3, 0, 0, 1),
-                        listOf(7, 0, 0, 0, 2, 0, 0, 0, 6),
-                        listOf(0, 6, 0, 0, 0, 0, 2, 8, 0),
-                        listOf(0, 0, 0, 4, 1, 9, 0, 0, 5),
-                        listOf(0, 0, 0, 0, 8, 0, 0, 7, 9)
+                val gameState by viewModel.gameState.collectAsState()
+                val selectedRow by viewModel.selectedRow.collectAsState()
+                val selectedColumn by viewModel.selectedColumn.collectAsState()
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(top =50.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                   ) {
+                    Text(text = "Sudoku Game",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(30.dp),
+                        fontWeight = FontWeight.ExtraBold,
+                        fontStyle = FontStyle.Italic,
+                        fontSize = 30.sp,
+                        color = Color.Red,
+                        style = TextStyle(shadow = Shadow(color = Color.Red, blurRadius = 3f))
                     )
-                    // Create an instance of SudokuGame
-                    val sudokuGame = SudokuGame(samplePuzzle)
-                    // Call the SudokuBoard composable with the board data
                     SudokuBoard(
-                        board = sudokuGame.board,
-                        modifier = Modifier.padding(innerPadding)
+                        board = gameState.board,
+                        selectedRow = selectedRow,
+                        selectedColumn = selectedColumn,
+                        onCellTapped = { row, col ->
+                            viewModel.updateSelectedCell(row, col)
+                        },
+                        modifier = Modifier.fillMaxSize().padding(start = 20.dp)
                     )
                 }
+
             }
         }
     }

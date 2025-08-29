@@ -10,6 +10,17 @@ class SudokuViewModel: ViewModel() {
     private val _gameState = MutableStateFlow(SudokuGame(samplePuzzle))
     val gameState: StateFlow<SudokuGame> = _gameState.asStateFlow()
 
+    private val _selectedRow = MutableStateFlow<Int?>(null)
+    val selectedRow: StateFlow<Int?> = _selectedRow.asStateFlow()
+
+    private val _selectedColumn = MutableStateFlow<Int?>(null)
+    val selectedColumn: StateFlow<Int?> = _selectedColumn.asStateFlow()
+
+    fun updateSelectedCell(row: Int, col: Int){
+        _selectedRow.value = row
+        _selectedColumn.value = col
+    }
+
     companion object{
         val samplePuzzle = listOf(
             // Your sample puzzle data here
