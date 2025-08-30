@@ -1,6 +1,6 @@
 package com.example.sudokugame
 
-import android.R.attr.text
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 
 import com.example.sudokugame.state.SudokuViewModel
 import com.example.sudokugame.ui.theme.SudokuGameTheme
+import com.example.sudokugame.userInterface.NumberPad
 import com.example.sudokugame.userInterface.SudokuBoard
 
 class MainActivity : ComponentActivity() {
@@ -65,27 +67,16 @@ class MainActivity : ComponentActivity() {
                         onCellTapped = { row, col ->
                             viewModel.updateSelectedCell(row, col)
                         },
-                        modifier = Modifier.fillMaxSize().padding(start = 20.dp)
+                    )
+                    NumberPad(
+                        onNumberClick = { number ->
+                            viewModel.onNumberInput(number)
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SudokuGameTheme {
-        Greeting("Android")
     }
 }
